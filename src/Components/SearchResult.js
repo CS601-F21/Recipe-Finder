@@ -1,5 +1,6 @@
 import react, { Component } from "react";
 import image from "./image.jpg"
+import { RecipeDetails } from "./RecipeDetails";
 
 const ItemButton = (props) => {
     return (
@@ -33,46 +34,9 @@ const SuggestedRecipes = (props) => {
                 <div className={["foodImageContainer"].join(" ")}>
                     <img className={['foodImage'].join(" ")} src={image}/>
                 </div>
-                <div className={["recipeInfoContainer"].join(" ")}>
-                    <div className={["recipeNameContainer"].join(" ")}>
-                        {props.recipeName}
-                    </div>
-                    <div className={["recipeDetailsContainer"].join(" ")}>
-                        <div className={["recipeTimeTake", "recipeInfo"].join(" ")}>
-                            <div className={["heading"].join(" ")}>
-                                Cooking Time :
-                            </div>
-                            <div className={["timeTaken", "info"].join(" ")}>
-                            {props.timeTaken}
-                            </div>
-                        </div>
-                        <div className={["recipeDifficulty", "recipeInfo"].join(" ")}>
-                            <div className={["heading"].join(" ")}>
-                                Difficulty :
-                            </div>
-                            <div className={["difficulty", "info"].join(" ")}>
-                                {props.difficulty}
-                            </div>
-                        </div>
-                        <div className={["recipeRating", "recipeInfo"].join(" ")}>
-                            <div className={["heading"].join(" ")}>
-                                Rating :
-                            </div>
-                            <div className={["rating", "info"].join(" ")}>
-                                {props.rating}
-                            </div>
-                        </div>
-                        <div className={["recipeTasteProfile", "recipeInfo"].join(" ")}>
-                            <div className={["heading"].join(" ")}>
-                                Taste Profile:
-                            </div>
-                            <div className={["tasteProfile", "info"].join(" ")}>
-                                {props.tasteProfile}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                <RecipeDetails recipeName = {props.recipeName} timeTaken = {props.timeTaken}
+                    difficulty = {props.difficulty} rating = {props.rating}
+                    tasteProfile = {props.tasteProfile} />
             </li>
     )
 }
