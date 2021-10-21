@@ -1,11 +1,12 @@
-import react, { Component } from "react";
+import react, { Component, useState } from "react";
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResult";
+import { useSelector } from "react-redux";
 
 const ActiveScreen = (props) => {
     return (
         <div className={["activeScreen"].join(" ")}>
-            <SearchBar/>
+            <SearchBar />
             <SearchResults/>
         </div>
     )
