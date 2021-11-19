@@ -23,7 +23,12 @@ const ItemButton = (props) => {
         let parentDiv = e.target.parentNode.parentNode;
         let elId = parentDiv.id;
         let ingredientToBeRemoved = parentDiv.querySelector(".itemName").innerText;
-        document.getElementById(elId).remove();
+
+        /**
+         * We do not have to remove the element over here, as when we update the state, the element gets 
+         * deleted on its own
+         */
+        // document.getElementById(elId).remove();
 
         const {addIngredient, removeIngredient} = bindActionCreators(allActions, dispatch);
         removeIngredient({ingredientToBeRemoved});
