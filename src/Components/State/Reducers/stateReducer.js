@@ -25,37 +25,46 @@
     We can also make our api calls from this file itself, as everytime the user enters
     an ingredient, we make an api call to see if we find any match.
 */
-let tempRandomIngredientsSet = new Set();
-tempRandomIngredientsSet.add("turmeric")
-tempRandomIngredientsSet.add("honey")
-tempRandomIngredientsSet.add("almond")
-tempRandomIngredientsSet.add("potatoe")
+// let tempRandomIngredientsSet = new Set();
 
-let recipe = {
-    "recipeName" : "Daal",
-    "cookingTime" : "20 mins",
-    "difficulty" : "2/5",
-    "rating" : "5/7",
-    "ingredients" : tempRandomIngredientsSet //random ingredients for now
-}
+// let recipe = {
+//     "recipeName" : "Daal",
+//     "timeTaken" : "20 mins",
+//     "difficulty" : "2/5",
+//     "rating" : "5/7",
+//     "tasteProfile" : "sweet",
+//     "ingredients" : tempRandomIngredientsSet //random ingredients for now
+// }
 
+
+// let defaultState = {
+//     "ingredients" : tempRandomIngredientsSet,
+//     "suggestedRecipe" : [
+//         recipe,
+//     ]
+// }
 
 let defaultState = {
-    "ingredients" : tempRandomIngredientsSet,
-    "suggestedRecipes" : [
-        recipe,
-    ]
+    
 }
 
 const reducer = (state = defaultState, action) => {
     // console.log("aaaaaaaaaaaaaa")
     // console.log(state)
+    let {ingredients, suggestedRecipe} = state;
+    let newState ={};
     switch (action.type) {
         case "addIngredient" :
             let newIngredient = action.payload;
-
-            let [ingredients, suggestedRecipes] = state;
-            ingredients.add(newIngredient);
+            // console.log("state is ");
+            // console.log(state);
+            // let {ingredients, suggestedRecipe} = state;
+            if (ingredients == undefined){
+                ingredients = new Set();
+            }
+            ingredients.add(newIngredient.ingredientsToBeAdded);
+            console.log(`all ingredients is`);
+            console.log(ingredients);
 
             /*
                 TODO:
@@ -64,53 +73,68 @@ const reducer = (state = defaultState, action) => {
             */
 
             /** Temp Code since we do not have an API right now */
-            tempRandomIngredientsSet = Set();
+            let tempRandomIngredientsSet = new Set();
             tempRandomIngredientsSet.add("paneer")
             tempRandomIngredientsSet.add("tomato")
             tempRandomIngredientsSet.add("onion")
             tempRandomIngredientsSet.add("cashew")
 
-            recipe = {
-                "recipeName" : "Paneer Butter Masala",
-                "cookingTime" : "20 mins",
+            let recipe = {
+                "recipeName" : "lol",
+                "timeTaken" : "20 mins",
                 "difficulty" : "3/5",
                 "rating" : "5/5",
+                "tasteProfile" : "sweet",
                 "ingredients" : tempRandomIngredientsSet //random ingredients for now
             }
 
-            suggestedRecipes.add(recipe);
-
-            let newState = {
-                "ingredients" : ingredients,
-                "suggestedRecipe" : suggestedRecipes
+            if (suggestedRecipe == undefined){
+                suggestedRecipe = [];
             }
+
+            suggestedRecipe.push(recipe);
+
+            newState = {
+                "ingredients" : ingredients,
+                "suggestedRecipe" : suggestedRecipe
+            }
+
+            // console.log("the new state is ");
+            // console.log(newState.ingredients);
 
 
             return ( newState )
 
         case "removeIngredient":
-            let ingredientToBeRemoved = action.payload;
+            let ingredientToBeRemoved = action.payload.ingredientToBeRemoved;
+            console.log(`going to remove ${ingredientToBeRemoved}`);
             
-            ingredients = state.ingredients;
-            suggestedRecipes = state.suggestedRecipes;
-            
-            ingredients.remove(ingredientToBeRemoved);
+            ingredients.delete(ingredientToBeRemoved);
+            // console.log("remaining ingredients are ");
+            // console.log(ingredients);
 
             //iterating backwards since it helps us avoid the pitfall of missing an 
             //element after splicing
-            for (let i = suggestedRecipes.length -1; i >= 0; i--){
-                recipe = suggestedRecipes[i];
-                if (recipe.ingredients.contains(ingredientToBeRemoved)) {
-                    suggestedRecipes.splice(i, 1);
+            for (let i = suggestedRecipe.length -1; i >= 0; i--){
+                let recipe = suggestedRecipe[i];
+                console.log(`recipe is`);
+                console.log(recipe);
+                if (recipe.ingredients.has(ingredientToBeRemoved)) {
+                    suggestedRecipe.splice(i, 1);
                 }
             }
 
             newState = {
                 "ingredients" : ingredients,
-                "suggestedRecipe" : suggestedRecipes
+                "suggestedRecipe" : suggestedRecipe
             }
 
             return ( newState )
+        // /**
+        //  * TODO THIS WHOLE THING
+        //  */
+        // case "updateId":
+
         default :
         return state;
 

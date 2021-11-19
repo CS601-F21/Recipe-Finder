@@ -12,15 +12,20 @@ const TextBox = (props) => {
 const AddButton = (props) => {
         //if we have different states in the future, we can simply return state.stateName
         //first we get the state
-        const state = useSelector((state) => state.mainState);
+        const state = useSelector((state) => state);
         const dispatch = useDispatch();
-    const addIngredientHelper = () => {
-        const {addIngredient, removeIngredient} = bindActionCreators(allActions, dispatch);
-    
-        let textBox = document.getElementById("t1");
-        let ingredientsToBeAdded = textBox.value;
-        addIngredient(ingredientsToBeAdded);
-    }
+        // const actions = bindActionCreators(allActions, dispatch);
+        // console.log(actions);
+        const addIngredientHelper = () => {
+            const {addIngredient, removeIngredient} = bindActionCreators(allActions, dispatch);
+        
+            let textBox = document.getElementById("t1");
+            let ingredientsToBeAdded = textBox.value;
+            // console.log("Going to add ingredient " + ingredientsToBeAdded);
+            addIngredient({ingredientsToBeAdded});
+            // console.log("sent ingredient to addIngredient method");
+
+        } 
 
     return <button className={["button", "addButton"].join(' ')} onClick = {addIngredientHelper} >Add</button>
 }
