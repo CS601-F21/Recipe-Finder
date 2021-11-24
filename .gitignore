@@ -6,8 +6,12 @@
 .pnp.js
 
 #config
+<<<<<<< HEAD
 /config.json
 /recipes_with_nutritional_info.json
+=======
+/backend/config.json
+>>>>>>> b4f65e52e4a067e39555948cbb8abe8ce05573b9
 
 # testing
 /coverage
