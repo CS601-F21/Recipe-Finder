@@ -5,6 +5,10 @@
 /.pnp
 .pnp.js
 
+#config
+/config.json
+/recipes_with_nutritional_info.json
+
 # testing
 /coverage
 
