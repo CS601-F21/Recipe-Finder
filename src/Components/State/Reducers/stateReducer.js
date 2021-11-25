@@ -49,10 +49,10 @@ let defaultState = {
 }
 
 const reducer = (state = defaultState, action) => {
-    // console.log("aaaaaaaaaaaaaa")
     // console.log(state)
     let {ingredients, suggestedRecipe} = state;
     let newState ={};
+    let ingredient_list = [];
     switch (action.type) {
         case "addIngredient" :
             let newIngredient = action.payload;
@@ -63,8 +63,8 @@ const reducer = (state = defaultState, action) => {
                 ingredients = new Set();
             }
             ingredients.add(newIngredient.ingredientsToBeAdded);
-            console.log(`all ingredients is`);
-            console.log(ingredients);
+            // console.log(`all ingredients is`);
+            // console.log(ingredients);
 
             /*
                 TODO:
@@ -91,6 +91,27 @@ const reducer = (state = defaultState, action) => {
             if (suggestedRecipe == undefined){
                 suggestedRecipe = [];
             }
+
+            console.log("gonna send the following array");
+            console.log(ingredients)
+            ingredient_list = Array.from(ingredients)
+
+            /**
+             * ACTUAL POST REQUEST BEING MADE HERE
+             */
+            const requestOptions = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ "ingredients": ingredient_list })
+            };
+
+            fetch('http://127.0.0.1:5000/', requestOptions)
+            .then(response => console.log(response))
+            // .then(data => this.setState({ postId: data.id }));
+
+            /**
+             * ACTUAL POST REQUEST END
+             */
 
             suggestedRecipe.push(recipe);
 
