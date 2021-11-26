@@ -1,13 +1,16 @@
 import { createStore, applyMiddleware } from "redux";
 import reducers from "./Reducers/allReducers"
 import thunk from "redux-thunk";
+import promiseMiddleware from "redux-promise";
 
 
 const Store = createStore(
     reducers,
-    {}, //default state will be an empty object
-    //check on the above line of code
-    applyMiddleware(thunk)
+    {
+        "ingredients" : new Set(),
+        "suggestedRecipe" : []
+    }, //this is the default state
+    applyMiddleware(thunk, promiseMiddleware)
 )
 
 export { Store };

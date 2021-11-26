@@ -8,6 +8,9 @@ import _uniqueId from 'lodash/uniqueId';
 
 const SuggestedRecipes = (props) => {
     const [id] = useState(_uniqueId("r"));
+
+    console.log("props received are ");
+    console.log(props)
     return (
             <li className = {["singleSuggestion"].join(" ")} id={id}>
                 <div className={["foodImageContainer"].join(" ")}>
@@ -21,17 +24,27 @@ const SuggestedRecipes = (props) => {
 }
 
 const SearchOutput = (props) => {
-    const state = useSelector((state) => state);
-    let suggestedRecipes = (state.mainState.suggestedRecipe)
-    // console.log(suggestedRecipes)
+
+    let state =  useSelector((state) => state)    
+
+    console.log("state is ")
+    console.log(state.mainState)
+    // console.log(Object.keys(state))
     
     let allSuggested = [];
-    if (suggestedRecipes == undefined){
-        suggestedRecipes = {};
-    }
-    for (let i = 0; i < suggestedRecipes.length; i++){
-        allSuggested.push(<SuggestedRecipes key = {i} {...suggestedRecipes[i]}/>)
-    }
+
+    // if (suggestedRecipes == undefined){
+    //     suggestedRecipes = {};
+    // }
+
+    let suggestedRecipes = state.mainState.suggestedRecipe
+
+    // console.log("suggested recipes are")
+    // console.log(suggestedRecipes)
+
+    // for (let i = 0; i < suggestedRecipes.length; i++){
+    //     allSuggested.push(<SuggestedRecipes key = {i} {...suggestedRecipes[i]}/>)
+    // }
 
     return (
         <div className={["searchResultsWrapper"]}>

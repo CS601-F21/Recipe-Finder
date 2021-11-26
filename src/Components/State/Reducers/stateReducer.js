@@ -45,92 +45,72 @@
 // }
 
 let defaultState = {
-    
+    "ingredients" : new Set(),
+    "suggestedRecipe" : []
 }
+
 
 const reducer = (state = defaultState, action) => {
     // console.log(state)
+
+    //we have two main states, the ingredients, which is the list of ingredients the user has
+    //the second is suggested recipes, which is the suggestion which we get from the backend
     let {ingredients, suggestedRecipe} = state;
+
+    //this is the new state, we will be returning, this is done because in redux, you cannot directly make a
+    //change to a state
     let newState ={};
+
+    //is the list we create to keep a track of the ingredients the user has, this will be different from the state.ingredients
     let ingredient_list = [];
     switch (action.type) {
+        /**
+         * The payload we will recieve will be an object having two keys, the ingredient key and the suggestions key.
+         * The ingredient will be the list of ingredient we have to update the state with.
+         * The suggestions will be a list of json objects which will have all the suggested recipes, we will use this list of of objects
+         *  and update the state of the suggestedRecipe list using this
+         */
         case "addIngredient" :
-            let newIngredient = action.payload;
-            // console.log("state is ");
-            // console.log(state);
-            // let {ingredients, suggestedRecipe} = state;
-            if (ingredients == undefined){
-                ingredients = new Set();
+            var payload = action.payload;
+            var receivedIngredients = payload['ingredients'];
+            var suggestions = payload['suggestion']
+
+            console.log("received ingredients form state as ");
+            console.log(ingredients);
+            var newIngredients = Array.from(ingredients)
+            for (let i = 0; i < receivedIngredients.length; i++){
+                newIngredients.push(receivedIngredients[i])
             }
-            ingredients.add(newIngredient.ingredientsToBeAdded);
-            // console.log(`all ingredients is`);
-            // console.log(ingredients);
+            
+            var newSet = new Set(newIngredients);
+            state = {
+               "ingredients"  : newSet,
+               "suggestedRecipe" : suggestedRecipe
+            }
+            return state;
+        
+        case "updateSuggestions" :
+            payload = action.payload;
+            newIngredients = payload['ingredients']
+            suggestions = payload['suggestion']
 
-            /*
-                TODO:
-                do api search here, and pass the ingredientSet as the arguments
-                // suggestedRecipes.add()//json object we got from api call 
-            */
-
-            /** Temp Code since we do not have an API right now */
-            let tempRandomIngredientsSet = new Set();
-            tempRandomIngredientsSet.add("paneer")
-            tempRandomIngredientsSet.add("tomato")
-            tempRandomIngredientsSet.add("onion")
-            tempRandomIngredientsSet.add("cashew")
-
-            let recipe = {
-                "recipeName" : "lol",
-                "timeTaken" : "20 mins",
-                "difficulty" : "3/5",
-                "rating" : "5/5",
-                "tasteProfile" : "sweet",
-                "ingredients" : tempRandomIngredientsSet //random ingredients for now
+            for (let i = 0; i < suggestions.length; i++){
+                suggestedRecipe.push(suggestions[i]);
             }
 
-            if (suggestedRecipe == undefined){
-                suggestedRecipe = [];
-            }
-
-            console.log("gonna send the following array");
-            console.log(ingredients)
-            ingredient_list = Array.from(ingredients)
-
-            /**
-             * ACTUAL POST REQUEST BEING MADE HERE
-             */
-            const requestOptions = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ "ingredients": ingredient_list })
-            };
-
-            fetch('http://127.0.0.1:5000/', requestOptions)
-            .then(response => console.log(response))
-            // .then(data => this.setState({ postId: data.id }));
-
-            /**
-             * ACTUAL POST REQUEST END
-             */
-
-            suggestedRecipe.push(recipe);
-
-            newState = {
-                "ingredients" : ingredients,
+            state = {
+                "ingredients"  : ingredients,
                 "suggestedRecipe" : suggestedRecipe
-            }
-
-            // console.log("the new state is ");
-            // console.log(newState.ingredients);
-
-
-            return ( newState )
+             }
+             return state;
 
         case "removeIngredient":
             let ingredientToBeRemoved = action.payload.ingredientToBeRemoved;
             console.log(`going to remove ${ingredientToBeRemoved}`);
             
+            //ingredients is the state ingredients defined above
             ingredients.delete(ingredientToBeRemoved);
+
             // console.log("remaining ingredients are ");
             // console.log(ingredients);
 
