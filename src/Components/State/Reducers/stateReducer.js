@@ -1,3 +1,4 @@
+import _ from 'lodash';
 /*
     This is the state reducer for our program, the default state will just 
     be an object which has two objects in turn.
@@ -46,12 +47,12 @@
 
 let defaultState = {
     "ingredients" : new Set(),
-    "suggestedRecipe" : []
+    "suggestedRecipe" : [],
+    "currentRecipe" : {}
 }
 
 
 const reducer = (state = defaultState, action) => {
-    // console.log(state)
 
     //we have two main states, the ingredients, which is the list of ingredients the user has
     //the second is suggested recipes, which is the suggestion which we get from the backend
@@ -61,8 +62,6 @@ const reducer = (state = defaultState, action) => {
     //change to a state
     let newState ={};
 
-    //is the list we create to keep a track of the ingredients the user has, this will be different from the state.ingredients
-    let ingredient_list = [];
     switch (action.type) {
         /**
          * The payload we will recieve will be an object having two keys, the ingredient key and the suggestions key.
@@ -73,15 +72,15 @@ const reducer = (state = defaultState, action) => {
         case "addIngredient" :
             var payload = action.payload;
             var receivedIngredients = payload['ingredients'];
-            var suggestions = payload['suggestion']
 
-            console.log("received ingredients form state as ");
+            console.log("received ingredients from state as ");
             console.log(ingredients);
             var newIngredients = Array.from(ingredients)
             for (let i = 0; i < receivedIngredients.length; i++){
                 newIngredients.push(receivedIngredients[i])
             }
             
+            //the state object has the ingredient key, which has to be a set
             var newSet = new Set(newIngredients);
             state = {
                "ingredients"  : newSet,
@@ -91,16 +90,11 @@ const reducer = (state = defaultState, action) => {
         
         case "updateSuggestions" :
             payload = action.payload;
-            newIngredients = payload['ingredients']
-            suggestions = payload['suggestion']
-
-            for (let i = 0; i < suggestions.length; i++){
-                suggestedRecipe.push(suggestions[i]);
-            }
+            var suggestions = payload['suggestion']
 
             state = {
                 "ingredients"  : ingredients,
-                "suggestedRecipe" : suggestedRecipe
+                "suggestedRecipe" : suggestions,
              }
              return state;
 
@@ -120,22 +114,17 @@ const reducer = (state = defaultState, action) => {
                 let recipe = suggestedRecipe[i];
                 console.log(`recipe is`);
                 console.log(recipe);
-                if (recipe.ingredients.has(ingredientToBeRemoved)) {
+                if (recipe.ingredients.includes(ingredientToBeRemoved)) {
                     suggestedRecipe.splice(i, 1);
                 }
             }
 
             newState = {
                 "ingredients" : ingredients,
-                "suggestedRecipe" : suggestedRecipe
+                "suggestedRecipe" : suggestedRecipe,
             }
 
-            return ( newState )
-        // /**
-        //  * TODO THIS WHOLE THING
-        //  */
-        // case "updateId":
-
+            return newState
         default :
         return state;
 

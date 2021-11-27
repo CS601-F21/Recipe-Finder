@@ -3,21 +3,17 @@
 */
 import './App.css';
 import React, { Component } from "react";
-import ActiveScreen from './Components/ActiveScreen';
+import HomePage from './Components/HomePage';
+import RecipePage from './Components/RecipePage';
+import { Route, Routes, Link } from "react-router-dom";
 
-// import { SearchBar } from './Components/SearchBar'
-// import { SearchResults } from './Components/SearchResult'
-
-
-class App extends Component {
-  constructor(props){
-    super(props);
-  }
-
-  render(){
-    return (
-        <ActiveScreen/>
-    )}
+function App() {
+  return (
+    <Routes>
+      <Route path = "/" element = {<HomePage/>}/>
+      <Route path = "/recipe" element = {<RecipePage/>}/>
+    </Routes>
+  )
 }
 
 export default App;

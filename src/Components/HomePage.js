@@ -3,7 +3,7 @@ import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResult";
 import { useSelector } from "react-redux";
 
-const ActiveScreen = (props) => {
+const HomePage = (props) => {
     return (
         <div className={["activeScreen"].join(" ")}>
             <SearchBar />
@@ -12,4 +12,4 @@ const ActiveScreen = (props) => {
     )
 }
 
-export default ActiveScreen;
+export default HomePage;

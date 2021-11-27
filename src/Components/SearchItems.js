@@ -9,19 +9,11 @@ import { bindActionCreators } from 'redux';
 
 const ItemButton = (props) => {
     const state = useSelector((state) => state);
-    const [id] = useState(_uniqueId("i"));
-    // let id = state.ingredientId;
-    // const dispatch = useDispatch();
-    //     const removeIngredientHelper = () => {
-    //         const {addIngredient, removeIngredient} = bindActionCreators(allActions, dispatch);
-    //         let ingredientToBeRemoved = 
-    //         removeIngredient({ingredientsToBeAdded});
-    //     } 
+    const [id] = useState(_uniqueId("i")); 
 
     const dispatch = useDispatch();
     const removeEl = (e) => {
         let parentDiv = e.target.parentNode.parentNode;
-        let elId = parentDiv.id;
         let ingredientToBeRemoved = parentDiv.querySelector(".itemName").innerText;
 
         /**
@@ -30,7 +22,7 @@ const ItemButton = (props) => {
          */
         // document.getElementById(elId).remove();
 
-        const {addIngredient, removeIngredient} = bindActionCreators(allActions, dispatch);
+        const {removeIngredient} = bindActionCreators(allActions, dispatch);
         removeIngredient({ingredientToBeRemoved});
     }
 

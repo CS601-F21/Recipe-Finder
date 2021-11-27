@@ -1,5 +1,4 @@
 import react, { Component, useState } from "react";
-import image from "./image.jpg"
 import { RecipeDetails } from "./RecipeDetails";
 import { SearchItems } from "./SearchItems";
 import { useSelector } from "react-redux";
@@ -8,17 +7,22 @@ import _uniqueId from 'lodash/uniqueId';
 
 const SuggestedRecipes = (props) => {
     const [id] = useState(_uniqueId("r"));
-
-    console.log("props received are ");
-    console.log(props)
+    /**
+     * The props we received are the following
+     * 'full_match' : boolean //whether user has all the required ingredients or not
+     * 'ingredient_quantity' : object with ingredient as the key and quantity of ingredient required as value
+     * 'ingredients' : list of all the required ingredient
+     * 'instructions' : string of how to cook the recipe
+     * 'missing_ingredients' : string stating how many ingredients the user is missing
+     * 'name' : string containing the name of the recipe
+     * 'nutrition_values' : object containing the nutritional value of the recipe
+     */
     return (
             <li className = {["singleSuggestion"].join(" ")} id={id}>
-                <div className={["foodImageContainer"].join(" ")}>
-                    <img className={['foodImage'].join(" ")} src={image}/>
-                </div>
-                <RecipeDetails recipeName = {props.recipeName} timeTaken = {props.timeTaken}
-                    difficulty = {props.difficulty} rating = {props.rating}
-                    tasteProfile = {props.tasteProfile} />
+                <RecipeDetails name = {props.name} ingredientQuantity = {props.ingredient_quantity}
+                    instructions = {props.instructions} nutritionValue = {props.nutrition_values}
+                    ingredients = {props.ingredients} fullMatch = {props.full_match} missingIngredients = {props.missing_ingredients}
+                    />
             </li>
     )
 }
@@ -26,38 +30,24 @@ const SuggestedRecipes = (props) => {
 const SearchOutput = (props) => {
 
     let state =  useSelector((state) => state)    
-
-    console.log("state is ")
-    console.log(state.mainState)
-    // console.log(Object.keys(state))
     
     let allSuggested = [];
 
-    // if (suggestedRecipes == undefined){
-    //     suggestedRecipes = {};
-    // }
-
     let suggestedRecipes = state.mainState.suggestedRecipe
 
-    // console.log("suggested recipes are")
-    // console.log(suggestedRecipes)
+    console.log("suggested recipes are")
+    console.log(suggestedRecipes)
 
-    // for (let i = 0; i < suggestedRecipes.length; i++){
-    //     allSuggested.push(<SuggestedRecipes key = {i} {...suggestedRecipes[i]}/>)
-    // }
+    for (let i = 0; i < suggestedRecipes.length; i++){
+        //we are pushing two things, the key is going to the index of the recipe, this is an unique identifier
+        //the second thing is the recipe itself
+        allSuggested.push(<SuggestedRecipes key = {i} {...suggestedRecipes[i]}/>)
+    }
 
     return (
         <div className={["searchResultsWrapper"]}>
             <ul className={["suggestions"].join(" ")}>
                 {allSuggested}
-                {/* <SuggestedRecipes recipeName = {props.recipeName} timeTaken = {props.timeTaken} difficulty = {props.difficulty}
-                 rating = {props.rating} tasteProfile = {props.tasteProfile} /> */}
-                {/* <SuggestedRecipes recipeName = {props.recipeName} timeTaken = {props.timeTaken} difficulty = {props.difficulty}
-                 rating = {props.rating} tasteProfile = {props.tasteProfile} />
-                <SuggestedRecipes recipeName = {props.recipeName} timeTaken = {props.timeTaken} difficulty = {props.difficulty}
-                 rating = {props.rating} tasteProfile = {props.tasteProfile} />
-                <SuggestedRecipes recipeName = {props.recipeName} timeTaken = {props.timeTaken} difficulty = {props.difficulty}
-                 rating = {props.rating} tasteProfile = {props.tasteProfile} /> */}
             </ul>
         </div>
     )
@@ -68,7 +58,6 @@ const SearchResults = (props) => {
         <div className={["searchResults"].join(" ")}>
             <SearchItems/>
             <SearchOutput/>
-            {/* {allSuggested} */}
         </div>
     )
 }

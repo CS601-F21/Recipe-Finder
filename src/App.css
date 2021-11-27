@@ -2,6 +2,7 @@ html, body, #root {
   margin: 0;
   height: 100%;
   background-image: url('./background.jpg');
+  background-size: cover;
   overflow: hidden;
 }
 
@@ -9,9 +10,12 @@ html, body, #root {
   overflow: scroll;
 }
 
-.App {
+/* .App {
   text-align: center;
-}
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+} */
 
 .App-logo {
   height: 40vmin;
@@ -130,7 +134,7 @@ html, body, #root {
 }
 
 .singleSuggestion {
-  height: 20%;
+  height: 25%;
   background-color: white;
   margin-bottom: 2%;
   display: flex;
@@ -141,11 +145,21 @@ html, body, #root {
 }
 
 .recipeInfoContainer {
-  width: 85%;
+  width: 100%;
   margin-left: 2%;
   margin-right: 2%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+}
+
+.essentialInformation {
+  width: 60%;
+  margin-right: 0.5%;
+}
+
+.nutritionalInformation {
+  width: 40%;
+  margin-top: 1.5%;
 }
 
 .foodImage {
@@ -157,19 +171,27 @@ html, body, #root {
 .recipeNameContainer {
   height: 45%;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 2rem;
+  margin-top: 3%;
 }
 
 .recipeDetailsContainer {
   height: 55%;
-  display: flex;
+  font-size: larger;
+  margin-left: 0.5%;
+  margin-top: 1%;
+  /* display: flex; */
 }
 
-.recipeInfo {
+.ingredientInformation {
+  width: 100%;
+}
+
+/* .recipeInfo {
   width: 25%;
   display: flex;
   flex-direction: column;
-}
+} */
 
 .heading {
   font-weight: bold;
@@ -177,6 +199,12 @@ html, body, #root {
 
 .info {
   margin-left: 10%;
+}
+
+.caloriesContainer {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-auto-rows: 60px;
 }
 
 

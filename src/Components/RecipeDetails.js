@@ -1,3 +1,9 @@
+import { Link } from "react-router-dom"
+import { bindActionCreators } from 'redux';
+import { allActions } from './State/Action-Creators/allActions'
+import { useDispatch } from "react-redux";
+
+
 const TimeTakenDiv = (props) => {
     return (
         <div className={["recipeTimeTake", "recipeInfo"].join(" ")}>
@@ -50,32 +56,90 @@ const RecipeTasteProfileDiv = (props) => {
     )
 }
 
+const IngredientInformationDiv = (props) => {
+    return (
+        <div className = {['ingredientInformation', 'recipeInfo'].join(" ")}>
+            <div className = {["test"].join(" ")} >
+                {props.ingredientInformation}
+            </div>
+        </div>
+    )
+}
+
 const RecipeDetailsContainer = (props) => {
     return (
         <div className={["recipeDetailsContainer"].join(" ")}>
-            <TimeTakenDiv timeTaken = {props.timeTaken}/>
-            <RecipeDifficultyDiv difficulty = {props.difficulty}/>
-            <RecipeRatingDiv rating = {props.rating}/>
-            <RecipeTasteProfileDiv tasteProfile = {props.tasteProfile}/>
+            <IngredientInformationDiv ingredientInformation = {props.ingredientInformation}/>
         </div>
     )
 }
 
 const RecipeNameContainer = (props) => {
+    /**
+     * TODO:
+     * We have a state which contains the current food item the user clicked on
+     * 
+     * To update the state, we add an onClick event, which updates the state accordingly. 
+     * We will then call that state in the RecipePage and render the page accordingly.
+     */
     return (
-        <div className={["recipeNameContainer"].join(" ")}>
-            {props.recipeName}
+        <Link to = {"/recipe"} state = {props.recipeInfo} className={["recipeNameContainer"].join(" ")}>
+            {props.name}
+        </Link>
+    )
+
+    
+}
+
+const RecipeCaloriesContainer = (props) => {
+    // <div className={["foodImageContainer"].join(" ")}>
+    //                 <img className={['foodImage'].join(" ")} src={image}/>
+    //             </div>
+
+    // console.log("int calories container ");
+    // console.log(props.calories.energy);
+
+    /**
+     * The nutritional information object has the following keys
+     * energy
+     * fat
+     * protein
+     * salt
+     * saturates
+     * sugars
+     */
+    return (
+        <div className={["caloriesContainer"].join(" ")}>
+            {/* {Math.floor(props.calories.energy)} */}
+            <NutritionalInformationContainer type = "calories" value = {props.calories.energy}/>
+            <NutritionalInformationContainer type = "protein" value = {props.calories.protein}/>
+            <NutritionalInformationContainer type = "fat" value = {props.calories.fat}/>
+            <NutritionalInformationContainer type = "salt" value = {props.calories.salt}/>
+            <NutritionalInformationContainer type = "saturates" value = {props.calories.saturates}/>
+            <NutritionalInformationContainer type = "sugar" value  = {props.calories.sugars}/>
         </div>
     )
 }
 
+const NutritionalInformationContainer = (props) => {
+    // console.log(props.value.className())
+    return (
+        <div>{props.type} : {Math.floor(props.value)}</div>
+    )
+}
+
 const RecipeDetails = (props) => {
+    // console.log(props)
     return (
         <div className={["recipeInfoContainer"].join(" ")}>
-            <RecipeNameContainer recipeName={props.recipeName}/>
-            <RecipeDetailsContainer timeTaken = {props.timeTaken} difficulty = {props.difficulty}
-                rating = {props.rating}  tasteProfile = {props.tasteProfile} />
+            <div className = {['essentialInformation'].join(" ")}>
+                <RecipeNameContainer name = {props.name} recipeInfo = {props}/>
+                <RecipeDetailsContainer  ingredientInformation = {props.missingIngredients}  />
             </div>
+            <div className = {["nutritionalInformation"].join(" ")}>
+                <RecipeCaloriesContainer calories = {props.nutritionValue} />
+            </div>
+        </div>
     )
 }
 

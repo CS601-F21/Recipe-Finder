@@ -32,8 +32,6 @@ def getRecipes():
         print('body is')
         print(body)
 
-        #uncomment this, when not in public wifi
-        '''
         #doing list(set(list())) to remove duplicates
         avail_ingredients = set(body['ingredients'])
         dbResults = list(recipe_collection.find({ "ingredients": {"$in": list(avail_ingredients) } }
@@ -45,38 +43,62 @@ def getRecipes():
         for recipes in dbResults:
             required_ingredients = set(recipes['ingredients'])
             if (avail_ingredients == required_ingredients):
+                recipes['full_match'] = True
+                recipes['missing_ingredients'] = f'you have all the ingredients to make the recipe, get cooking!'
                 response['absolute_match'].append(recipes)
                 continue
-            difference = abs(len(required_ingredients) - len(avail_ingredients))
 
-            if (difference <= 2):
+            difference = len(required_ingredients) - len(avail_ingredients)
+            #if count of required ingredient is greater than available ingredients
+            #the user at the current point does not have all the ingredients need 
+            #to make the recipe
+            #so if the user need only one or two more ingredients to make the recipe, then 
+            #we put it in the potential_match as the user might have those recipes
+            if (difference > 0 and difference <= 2):
+                recipes['full_match'] = False
+                recipes['missing_ingredients'] = f'you have {len(avail_ingredients)} out of {len(required_ingredients)} required ingredients to make the recipe'
                 response['potential_match'].append(recipes)
+                continue
+            elif (difference < 0):
+                #https://stackoverflow.com/questions/16579085/how-can-i-verify-if-one-list-is-a-subset-of-another
+                #to find how to check whether one set is a subset of another in python
+                if (required_ingredients <= avail_ingredients): #pythonic way to check whether a set is a subset of another
+                    recipes['full_match'] = True
+                    recipes['missing_ingredients'] = f'you have all the ingredients to make the recipe, get cooking!'
+                    response['absolute_match'].append(recipes)
+                #since the user has more ingredients than the required one, chances are that the user might have forgotten
+                #to mention an ingredient or two so thats why if the difference between the available ingredients and required
+                #ingredients is less than equal to 3, then we put the recipe in the potential_match
+                elif (abs(difference) <= 3): #abs is maths.absolute
+                    recipes['full_match'] = False
+                    recipes['missing_ingredients'] = f'you are missing {difference} ingredients to make the recipe'
+                    response['potential_match'].append(recipes)
         
         
         #if we have too many potential matched, we just send the first 5
-        if (len (response['potential_match']) > 5):
-            response['potential_match'] = response['potential_match'][:5]
+        if (len (response['potential_match']) > 10):
+            response['potential_match'] = response['potential_match'][:10] #trimming of the list so that we only have the first 10 potential matches
         
         absolute_match = response['absolute_match']
         potential_match = response['potential_match']
         print(f'length of absolute match is {len(absolute_match)}')
         print(f'length of potential match is {len(potential_match)}')
-        '''
+        
 
-        print("response is going to be")
-        response = dict()
-        response['absolute_match'] = []
-        response['potential_match'] = []
+        # print("response is going to be")
+        # response = dict()
+        # response['absolute_match'] = []
+        # response['potential_match'] = []
         
         
-        sample_response = mockResponse("parfait", {'yogurt' : '1 cup', 'milk' : '2 ounces'}, 'make it quickly', {'energy' : 90, 'fat' : 20})
-        sample_response1 = mockResponse("lamb curry", {'lamb' : 'full thing', 'milk' : '2 ounces'}, 'make it slowly', {'energy' : 9000, 'fat' : 200})
-        sample_response2 = mockResponse("curry parfait", {'parfait' : '1 cup', 'milk' : '2 ounces', 'wheat' : '7 inches'}, 'make it quickly', {'energy' : 90, 'fat' : 20})
+        # sample_response = mockResponse("parfait", {'yogurt' : '1 cup', 'milk' : '2 ounces'}, 'make it quickly', {'energy' : 90, 'fat' : 20})
+        # sample_response1 = mockResponse("lamb curry", {'lamb' : 'full thing', 'milk' : '2 ounces'}, 'make it slowly', {'energy' : 9000, 'fat' : 200})
+        # sample_response2 = mockResponse("curry parfait", {'parfait' : '1 cup', 'milk' : '2 ounces', 'wheat' : '7 inches'}, 'make it quickly', {'energy' : 90, 'fat' : 20})
 
-        response['absolute_match'].append(sample_response)
-        response['absolute_match'].append(sample_response1)
+        # response['absolute_match'].append(sample_response)
+        # response['absolute_match'].append(sample_response1)
 
-        response['potential_match'].append(sample_response2)
+        # response['potential_match'].append(sample_response2)
 
 
         response = jsonify(

@@ -8,7 +8,7 @@ const Store = createStore(
     reducers,
     {
         "ingredients" : new Set(),
-        "suggestedRecipe" : []
+        "suggestedRecipe" : [],
     }, //this is the default state
     applyMiddleware(thunk, promiseMiddleware)
 )

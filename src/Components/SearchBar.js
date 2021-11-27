@@ -17,12 +17,13 @@ const AddButton = (props) => {
         // const actions = bindActionCreators(allActions, dispatch);
         // console.log(actions);
         const addIngredientHelper = () => {
-            const {addIngredient, removeIngredient} = bindActionCreators(allActions, dispatch);
+            const {addIngredient, getSuggestions} = bindActionCreators(allActions, dispatch);
         
             let textBox = document.getElementById("t1");
             let ingredientsToBeAdded = textBox.value;
             // console.log("Going to add ingredient " + ingredientsToBeAdded);
             addIngredient({ingredientsToBeAdded});
+            getSuggestions();
             // console.log("sent ingredient to addIngredient method");
 
         } 
