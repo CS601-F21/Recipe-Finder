@@ -207,4 +207,39 @@ html, body, #root {
   grid-auto-rows: 60px;
 }
 
+.recipeInstructionPage {
+  margin-left: 20%;
+  margin-right: 20%;
+  height: 102%;
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+}
+
+.instructionPageContainer {
+  margin: 2%;
+  height: 25%;
+  background-color:#61dafb;
+}
+
+.instructionPageRecipeNameContainer{
+  display: flex;
+  justify-content: center;
+  font-weight: bolder;
+  font-size: 6vh;
+  text-align: center
+}
+
+.instructionPageIngredientsContainer{
+
+}
+
+.instructionPageInstructionsContainer {
+
+}
+
+.instructionPageNutritionalValuesContainer{
+
+}
+
 

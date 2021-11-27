@@ -1,7 +1,5 @@
 import react, { Component, useState } from "react";
-import { SearchBar } from "./SearchBar";
-import { SearchResults } from "./SearchResult";
-import { useSelector } from "react-redux";
+import { RecipeInstructionPage } from "./RecipeInstructionPage"
 import { useParams, useLocation } from "react-router";
 
 
@@ -21,10 +19,9 @@ const RecipePage = (props) => {
      */
     const location = useLocation();
     const recipeInfo = location.state;
-    console.log(recipeInfo)
     return (
         <div className={["activeScreen"].join(" ")}>
-            
+            <RecipeInstructionPage recipeInfo = {recipeInfo} />
         </div>
     )
 }
