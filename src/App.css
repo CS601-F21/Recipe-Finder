@@ -219,14 +219,14 @@ html, body, #root {
 .instructionPageContainer {
   margin: 2%;
   height: 25%;
-  background-color:#61dafb;
+  background-color:darkgrey;
 }
 
 .instructionPageRecipeNameContainer{
   display: flex;
   justify-content: center;
   font-weight: bolder;
-  font-size: 6vh;
+  font-size: 7.1vh;
   text-align: center
 }
 
