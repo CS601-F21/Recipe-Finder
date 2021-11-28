@@ -22,44 +22,41 @@ const getSuggestions = async () => {
     let state = Store.getState(); 
 
     //first we need to get the list of current ingredients the user has
-    let ingredient_list =  Array.from(state.mainState.ingredients);
+    let ingredientList =  Array.from(state.mainState.ingredients);
 
     //setting up post body
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ "ingredients": ingredient_list})
+        body: JSON.stringify({ "ingredients": ingredientList})
     };
 
     const request = await fetch('http://127.0.0.1:5000/', requestOptions);
 
     const response = await request.json();
+
+    console.log("got back the following response");
+    console.log(response);
     
 
     /**
     *  response is an object with two keys, absolute_match and potential_match
     *  absolute match and potential match are arrays of json objects
     *  the keys are
-    *          'ingredient_quantity' : object
-    *                      key of object are the ingredients themselves and the 
-    *                      value is the quantity for the particular ingredient
-    *          'instruction' : string
-    *                      is the instruction for making the recipe
-    *          'ingredients' : [] Array containing all the ingredients
-    *          'nutrition_value' : object
-    *                      the nutrition value object has the following keys 
-    *                          'energy' : int total calories
-    *                          'fat', 'protein', 'salt', 'saturates', 'sugars'
-    *                          all are int
+    *          {"name" : 1, "id" : 0, "minutes" : 1, "tags" : 1, "nutrition" : 1, "n_steps" : 1, "steps" : 1, 
+                            "description" : 1, "ingredients" : 1, "n_ingredients" : 1, availableIngredients : 1}
+                where tags, steps and ingredients are arrays
+                      nutrition is an object
+                      everything else is a string
     *                      
     */
 
-    let absolute_match = response['absolute_match'];
-    let potential_match = response['potential_match'];
+    let absoluteMatch = response['absoluteMatch'];
+    let potentialMatch = response['potentialMatch'];
 
     //concatenating this way ensures that we have the absolute matches first
     //followed by the potential matches
-    let suggestions = absolute_match.concat(potential_match);
+    let suggestions = absoluteMatch.concat(potentialMatch);
     
 
 
@@ -73,7 +70,7 @@ const getSuggestions = async () => {
     */
 
     const dispatchObject = {
-        'ingredients' : ingredient_list,
+        'ingredients' : ingredientList,
         'suggestion' : suggestions,
     }
 

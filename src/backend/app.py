@@ -21,7 +21,7 @@ database = config['database']
 uri = "mongodb+srv://" +username+":"+password+"@"+database+".tjeuf.mongodb.net/RecipeSearch?retryWrites=true&w=majority"
 client = pymongo.MongoClient(uri)
 db = client.Recipes
-recipe_collection = db.Recipe
+recipeCollection = db.Recipe
 
 @app.route('/',methods = ['POST', 'GET'])
 def getRecipes():
@@ -33,59 +33,102 @@ def getRecipes():
         print(body)
 
         #doing list(set(list())) to remove duplicates
-        avail_ingredients = set(body['ingredients'])
-        dbResults = list(recipe_collection.find({ "ingredients": {"$in": list(avail_ingredients) } }
-                         , {"name" : 1, "_id" : 0, "ingredients" : 1, "ingredient_quantity" : 1, "instructions" : 1, "nutrition_values" : 1}))
+        availableIngredients = set(body['ingredients'])
+        dbResults = list(recipeCollection.find({ "ingredients": {"$in": list(availableIngredients) } }
+                         , {"name" : 1, "id" : 1, "minutes" : 1, "tags" : 1, "nutrition" : 1, "n_steps" : 1, "steps" : 1, 
+                            "description" : 1, "ingredients" : 1, "n_ingredients" : 1, "_id" : 0}))
         
         response = {}
-        response['absolute_match'] = []
-        response['potential_match'] = []
+        response['absoluteMatch'] = []
+        response['potentialMatch'] = []
         for recipes in dbResults:
-            required_ingredients = set(recipes['ingredients'])
-            if (avail_ingredients == required_ingredients):
-                recipes['full_match'] = True
-                recipes['missing_ingredients'] = f'you have all the ingredients to make the recipe, get cooking!'
-                response['absolute_match'].append(recipes)
+            requiredIngredients = set(recipes['ingredients'])
+
+            #we can compare two sets in python using the equals operator
+            if (availableIngredients == requiredIngredients):
+                recipes['fullMatch'] = True
+                availIngredients = str(recipes['n_ingredients']) + "/" + str(recipes['n_ingredients']) + " ingredients available"
+                recipes['availableIngredients'] = availIngredients
+                response['absoluteMatch'].append(recipes)
                 continue
 
-            difference = len(required_ingredients) - len(avail_ingredients)
+            difference = len(requiredIngredients) - len(availableIngredients)
             #if count of required ingredient is greater than available ingredients
             #the user at the current point does not have all the ingredients need 
             #to make the recipe
             #so if the user need only one or two more ingredients to make the recipe, then 
             #we put it in the potential_match as the user might have those recipes
             if (difference > 0 and difference <= 2):
-                recipes['full_match'] = False
-                recipes['missing_ingredients'] = f'you have {len(avail_ingredients)} out of {len(required_ingredients)} required ingredients to make the recipe'
-                response['potential_match'].append(recipes)
+                recipes['fullMatch'] = False
+                availIngredients = str(int(recipes['n_ingredients'])-difference) + "/" + str(recipes['n_ingredients']) + " ingredients available"
+                recipes['availableIngredients'] = availIngredients
+                response['potentialMatch'].append(recipes)
                 continue
             elif (difference < 0):
                 #https://stackoverflow.com/questions/16579085/how-can-i-verify-if-one-list-is-a-subset-of-another
                 #to find how to check whether one set is a subset of another in python
-                if (required_ingredients <= avail_ingredients): #pythonic way to check whether a set is a subset of another
-                    recipes['full_match'] = True
-                    recipes['missing_ingredients'] = f'you have all the ingredients to make the recipe, get cooking!'
-                    response['absolute_match'].append(recipes)
+
+                # print("Type of required ingredients and available ingredients is ")
+                # print(type(requiredIngredients))
+                # print(type(availableIngredients))
+                if (requiredIngredients <= availableIngredients): #pythonic way to check whether a set is a subset of another
+                    recipes['fullMatch'] = True
+                    availIngredients = str(recipes['n_ingredients']) + "/" + str(recipes['n_ingredients']) + " ingredients available"
+                    recipes['availableIngredients'] = availIngredients
+                    response['absoluteMatch'].append(recipes)
                 #since the user has more ingredients than the required one, chances are that the user might have forgotten
                 #to mention an ingredient or two so thats why if the difference between the available ingredients and required
                 #ingredients is less than equal to 3, then we put the recipe in the potential_match
                 elif (abs(difference) <= 3): #abs is maths.absolute
-                    recipes['full_match'] = False
-                    recipes['missing_ingredients'] = f'you are missing {difference} ingredients to make the recipe'
-                    response['potential_match'].append(recipes)
+                    recipes['fullMatch'] = False
+                    availIngredients = str(int(recipes['n_ingredients']) - abs(difference)) + "/" + str(recipes['n_ingredients']) + " ingredients available"
+                    recipes['availableIngredients'] = availIngredients
+                    response['potentialMatch'].append(recipes)
         
         
         #if we have too many potential matched, we just send the first 5
-        if (len (response['potential_match']) > 10):
-            response['potential_match'] = response['potential_match'][:10] #trimming of the list so that we only have the first 10 potential matches
+        if (len (response['potentialMatch']) > 10):
+            response['potentialMatch'] = response['potentialMatch'][:10] #trimming of the list so that we only have the first 10 potential matches
         
-        absolute_match = response['absolute_match']
-        potential_match = response['potential_match']
-        print(f'length of absolute match is {len(absolute_match)}')
-        print(f'length of potential match is {len(potential_match)}')
-        
+        absoluteMatch = response['absoluteMatch']
+        potentialMatch = response['potentialMatch']
+        print(f'length of absolute match is {len(absoluteMatch)}')
+        print(f'length of potential match is {len(potentialMatch)}')
 
-        # print("response is going to be")
+        response = jsonify(
+            {
+                "absoluteMatch" : response['absoluteMatch'], 
+                "potentialMatch" : response['potentialMatch']
+            }
+        )
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        print(str(response))
+        return response
+    else :
+        return "<h1> GET </h1>"
+
+#this is used to mock a response to the front-end when server connection is not available
+def mockResponse (name :str, ingredientQuant: dict, instruction: str, nutrition: dict()):
+    sampleResponse = dict()
+    sampleResponse['name'] = name
+    sampleResponse['ingredients'] = []
+    sampleResponse['ingredientQuantity'] = dict()
+    sampleResponse['nutrition'] = dict()
+
+    for key, value in ingredientQuant.items():
+        sampleResponse['ingredients'].append(key)
+        sampleResponse['ingredientQuantity'][key] = value
+
+    for key, value in nutrition.items():
+        sampleResponse['nutrition'][key] = value
+    
+    sampleResponse['instruction'] = instruction
+
+
+    return sampleResponse
+
+
+# print("response is going to be")
         # response = dict()
         # response['absolute_match'] = []
         # response['potential_match'] = []
@@ -99,65 +142,3 @@ def getRecipes():
         # response['absolute_match'].append(sample_response1)
 
         # response['potential_match'].append(sample_response2)
-
-
-        response = jsonify(
-            {
-                "absolute_match" : response['absolute_match'], 
-                "potential_match" : response['potential_match']
-            }
-        )
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        print(str(response))
-        return response
-    else :
-        return "<h1> GET </h1>"
-
-def getRecipes (ingredient_list : list):
-    print("in all recipes")
-    print(f"ingredient list is {ingredient_list}")
-    cursor = recipe_collection.find({ "ingredients": {"$in": ingredient_list } }
-                         , {"name" : 1, "_id" : 0, "ingredients" : 1, "ingredient_quantity" : 1, "instructions" : 1, "nutrition_values" : 1})
-    all_recipes = list(cursor)
-
-    #perfect match is the list of recipes for which the user has all the available ingredients
-    #probably match is the list of recipes for which the user has at-least 70-80% of the required ingredients
-    perfect_match, probable_match = splitRecipes (ingredient_list, all_recipes)
-    # print(all_recipes[0])
-    return perfect_match, probable_match
-
-
-# https://stackoverflow.com/questions/14720324/compute-the-similarity-between-two-lists
-def cosine_similarity (c1, c2):
-    terms = set(c1).union(c2)
-    dotprod = sum(c1.get(k, 0) * c2.get(k, 0) for k in terms)
-    magA = math.sqrt(sum(c1.get(k, 0)**2 for k in terms))
-    magB = math.sqrt(sum(c2.get(k, 0)**2 for k in terms))
-    return dotprod / (magA * magB)
-
-def mockResponse (name :str, ingredient_quant: dict, instruction: str, nutrition: dict()):
-    sample_response = dict()
-    sample_response['name'] = name
-    sample_response['ingredients'] = []
-    sample_response['ingredient_quantity'] = dict()
-    sample_response['nutrition'] = dict()
-
-    for key, value in ingredient_quant.items():
-        sample_response['ingredients'].append(key)
-        sample_response['ingredient_quantity'][key] = value
-
-    for key, value in nutrition.items():
-        sample_response['nutrition'][key] = value
-    
-    sample_response['instruction'] = instruction
-
-
-    return sample_response
-
-
-
-a = Counter([ "sugars", "oil", "egg substitute", "orange juice", "leavening agents", "wheat flour" ])
-
-b = Counter([ "sugars", "oil", "egg substitute", "orange juice", "leavening agents", "wheat flour" ])
-
-print(cosine_similarity(a,b))

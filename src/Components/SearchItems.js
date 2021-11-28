@@ -14,7 +14,8 @@ const ItemButton = (props) => {
     const dispatch = useDispatch();
     const removeEl = (e) => {
         let parentDiv = e.target.parentNode.parentNode;
-        let ingredientToBeRemoved = parentDiv.querySelector(".itemName").innerText;
+        let ingredientToBeRemoved = parentDiv.querySelector(".itemNameTag").innerText;
+
 
         /**
          * We do not have to remove the element over here, as when we update the state, the element gets 
@@ -26,18 +27,14 @@ const ItemButton = (props) => {
         removeIngredient({ingredientToBeRemoved});
     }
 
-
     return (
-        <li className={["item"]} id={id}>
-            <div className={["itemBorder"]}>
-                <div className={["removeItemButton", "button"].join(" ")} onClick = {removeEl}>
-                    x
-                </div>
-                <div className={["itemName"].join(" ")}>
-                    {props.itemName}
-                </div>
-            </div>
-        </li>
+        <p className = {["itemNameTag"].join(" ")} onClick = {removeEl}>{props.itemName}</p>                  
+    )
+}
+
+const PInsertionItem = (props) => {
+    return (
+        <p className = {["itemName", "removeItemButton"]}>props.name</p>
     )
 }
 
@@ -60,9 +57,11 @@ const SearchItems = (props) => {
 
 
     return (
-        <ul className = {["searchItemList"].join(" ")}>
-            {buttonList}
-        </ul>
+        <div className = "searchItemContainer">
+            <div className = {["searchItemList"].join(" ")}>
+                {buttonList}
+            </div>
+        </div>
     )
 }
 

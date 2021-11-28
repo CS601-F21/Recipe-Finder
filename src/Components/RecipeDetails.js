@@ -59,8 +59,11 @@ const RecipeTasteProfileDiv = (props) => {
 const IngredientInformationDiv = (props) => {
     return (
         <div className = {['ingredientInformation', 'recipeInfo'].join(" ")}>
-            <div className = {["test"].join(" ")} >
-                {props.ingredientInformation}
+            <div className = {["availableIngredients"].join(" ")} >
+                {props.availableIngredients}
+            </div>
+            <div className = {['timeTaken', 'recipeInfo'].join(" ")}>
+                Estimated Time : {props.timeTaken} minutes
             </div>
         </div>
     )
@@ -69,7 +72,7 @@ const IngredientInformationDiv = (props) => {
 const RecipeDetailsContainer = (props) => {
     return (
         <div className={["recipeDetailsContainer"].join(" ")}>
-            <IngredientInformationDiv ingredientInformation = {props.ingredientInformation}/>
+            <IngredientInformationDiv availableIngredients = {props.availableIngredients} timeTaken = {props.timeTaken}/>
         </div>
     )
 }
@@ -92,31 +95,9 @@ const RecipeNameContainer = (props) => {
 }
 
 const RecipeCaloriesContainer = (props) => {
-    // <div className={["foodImageContainer"].join(" ")}>
-    //                 <img className={['foodImage'].join(" ")} src={image}/>
-    //             </div>
-
-    // console.log("int calories container ");
-    // console.log(props.calories.energy);
-
-    /**
-     * The nutritional information object has the following keys
-     * energy
-     * fat
-     * protein
-     * salt
-     * saturates
-     * sugars
-     */
     return (
         <div className={["caloriesContainer"].join(" ")}>
-            {/* {Math.floor(props.calories.energy)} */}
-            <NutritionalInformationContainer type = "calories" value = {props.calories.energy}/>
-            <NutritionalInformationContainer type = "protein" value = {props.calories.protein}/>
-            <NutritionalInformationContainer type = "fat" value = {props.calories.fat}/>
-            <NutritionalInformationContainer type = "salt" value = {props.calories.salt}/>
-            <NutritionalInformationContainer type = "saturates" value = {props.calories.saturates}/>
-            <NutritionalInformationContainer type = "sugar" value  = {props.calories.sugars}/>
+            <NutritionalInformationContainer type = "calories" value = {props.calories.calories}/>
         </div>
     )
 }
@@ -128,16 +109,56 @@ const NutritionalInformationContainer = (props) => {
     )
 }
 
+const RecipeTagsContainer = (props) => {
+    const tagList = [];
+    for (let i = 0; i < props.tags.length; i++){
+        if (typeof props.tags[i] == 'string'){
+            tagList.push(<LiForTags tags = {props.tags[i]}/>)
+        }
+    }
+    return (
+        <div className = {['tagsContainer']}>
+            Common Tags : 
+            <ul className = {['tagList'].join(" ")}>
+                {tagList}                
+            </ul>
+        </div>
+    )
+}
+
+const LiForTags = (props) => {
+    return (
+        /**
+         * TODO make the tags hyperlinks to recipes which have similar tags
+         */
+        <Link className = {['tags'].join(" ")} to={"/something"} >#{props.tags}</Link>
+        // <li className = {['tags'].join(" ")}>#{props.tags}</li>
+    )
+}
+
 const RecipeDetails = (props) => {
-    // console.log(props)
+    /**
+     * <RecipeDetails 
+                    name = {props.name}
+                    ingredients = {props.ingredients}
+                    tags = {props.tags}
+                    minutes = {props.minutes}
+                    description = {props.description}
+                    nutrition = {props.nutrition}
+                    steps = {props.steps}
+                    availableIngredients = {props.availableIngredients}
+                />
+        are the props received
+     */
     return (
         <div className={["recipeInfoContainer"].join(" ")}>
             <div className = {['essentialInformation'].join(" ")}>
                 <RecipeNameContainer name = {props.name} recipeInfo = {props}/>
-                <RecipeDetailsContainer  ingredientInformation = {props.missingIngredients}  />
+                <RecipeDetailsContainer  availableIngredients = {props.availableIngredients} timeTaken = {props.minutes}/>
             </div>
             <div className = {["nutritionalInformation"].join(" ")}>
-                <RecipeCaloriesContainer calories = {props.nutritionValue} />
+                <RecipeCaloriesContainer calories = {props.nutrition}/>
+                <RecipeTagsContainer tags = {props.tags} />
             </div>
         </div>
     )

@@ -73,8 +73,8 @@ const reducer = (state = defaultState, action) => {
             var payload = action.payload;
             var receivedIngredients = payload['ingredients'];
 
-            console.log("received ingredients from state as ");
-            console.log(ingredients);
+            // console.log("received ingredients from state as ");
+            // console.log(ingredients);
             var newIngredients = Array.from(ingredients)
             for (let i = 0; i < receivedIngredients.length; i++){
                 newIngredients.push(receivedIngredients[i])
@@ -112,8 +112,8 @@ const reducer = (state = defaultState, action) => {
             //element after splicing
             for (let i = suggestedRecipe.length -1; i >= 0; i--){
                 let recipe = suggestedRecipe[i];
-                console.log(`recipe is`);
-                console.log(recipe);
+                // console.log(`recipe is`);
+                // console.log(recipe);
                 if (recipe.ingredients.includes(ingredientToBeRemoved)) {
                     suggestedRecipe.splice(i, 1);
                 }

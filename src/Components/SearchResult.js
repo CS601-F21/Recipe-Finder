@@ -9,20 +9,33 @@ const SuggestedRecipes = (props) => {
     const [id] = useState(_uniqueId("r"));
     /**
      * The props we received are the following
-     * 'full_match' : boolean //whether user has all the required ingredients or not
-     * 'ingredient_quantity' : object with ingredient as the key and quantity of ingredient required as value
-     * 'ingredients' : list of all the required ingredient
-     * 'instructions' : string of how to cook the recipe
-     * 'missing_ingredients' : string stating how many ingredients the user is missing
-     * 'name' : string containing the name of the recipe
-     * 'nutrition_values' : object containing the nutritional value of the recipe
+     * availableIngredients : string telling how many ingredients user has available
+     * description : string having a description of the recipe
+     * fullMatch : boolean whether user has all recipes or not
+     * id : id of the recipe
+     * ingredients : array of all the required ingredients
+     * minutes : string of how long it takes to cook the recipe
+     * n_ingredients : string of how many ingredients are required
+     * n_steps : string of how many steps are required
+     * name : string, name of recipe
+     * steps : array containing each individual step to make the recipe
+     * tags : array containing common tags for the recipe
+     * nutrition : object containing nutrition info of the recipe
+     *             contains 'calories', 'protein', 'saturatedFat', 'sodium'
+     *                      'sugar' and 'totalFat'
      */
     return (
             <li className = {["singleSuggestion"].join(" ")} id={id}>
-                <RecipeDetails name = {props.name} ingredientQuantity = {props.ingredient_quantity}
-                    instructions = {props.instructions} nutritionValue = {props.nutrition_values}
-                    ingredients = {props.ingredients} fullMatch = {props.full_match} missingIngredients = {props.missing_ingredients}
-                    />
+                <RecipeDetails 
+                    name = {props.name}
+                    ingredients = {props.ingredients}
+                    tags = {props.tags}
+                    minutes = {props.minutes}
+                    description = {props.description}
+                    nutrition = {props.nutrition}
+                    steps = {props.steps}
+                    availableIngredients = {props.availableIngredients}
+                />
             </li>
     )
 }
@@ -35,8 +48,8 @@ const SearchOutput = (props) => {
 
     let suggestedRecipes = state.mainState.suggestedRecipe
 
-    console.log("suggested recipes are")
-    console.log(suggestedRecipes)
+    // console.log("suggested recipes are")
+    // console.log(suggestedRecipes)
 
     for (let i = 0; i < suggestedRecipes.length; i++){
         //we are pushing two things, the key is going to the index of the recipe, this is an unique identifier
