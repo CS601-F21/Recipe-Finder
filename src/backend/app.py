@@ -1,7 +1,12 @@
+'''
+    Author : Shubham Pareek
+    Class Purpose : Receives the request from the front-end, makes a query to the db
+                    and returns the appropriate json response
+'''
 import json
 import pymongo
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS #this is to handle cors response
 
 from collections import Counter
 import math
@@ -107,7 +112,7 @@ def getRecipes():
     else :
         return "<h1> GET </h1>"
 
-#this is used to mock a response to the front-end when server connection is not available
+#this is used to mock a response to the front-end when db connection is not available
 def mockResponse (name :str, ingredientQuant: dict, instruction: str, nutrition: dict()):
     sampleResponse = dict()
     sampleResponse['name'] = name
@@ -127,18 +132,3 @@ def mockResponse (name :str, ingredientQuant: dict, instruction: str, nutrition:
 
     return sampleResponse
 
-
-# print("response is going to be")
-        # response = dict()
-        # response['absolute_match'] = []
-        # response['potential_match'] = []
-        
-        
-        # sample_response = mockResponse("parfait", {'yogurt' : '1 cup', 'milk' : '2 ounces'}, 'make it quickly', {'energy' : 90, 'fat' : 20})
-        # sample_response1 = mockResponse("lamb curry", {'lamb' : 'full thing', 'milk' : '2 ounces'}, 'make it slowly', {'energy' : 9000, 'fat' : 200})
-        # sample_response2 = mockResponse("curry parfait", {'parfait' : '1 cup', 'milk' : '2 ounces', 'wheat' : '7 inches'}, 'make it quickly', {'energy' : 90, 'fat' : 20})
-
-        # response['absolute_match'].append(sample_response)
-        # response['absolute_match'].append(sample_response1)
-
-        # response['potential_match'].append(sample_response2)

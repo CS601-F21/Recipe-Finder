@@ -1,68 +1,64 @@
-import react , { Components, useState } from "react"
-import { useSelector } from "react-redux"
-import _uniqueId from 'lodash/uniqueId';
+/**
+ * Author : Shubham Pareek
+ * Purpose : Search Items componenent, shows the user all the items they have input so far
+ */
+import react, { Components, useState } from "react";
+import { useSelector } from "react-redux";
+import _uniqueId from "lodash/uniqueId";
 import { useDispatch } from "react-redux";
-import { allActions } from './State/Action-Creators/allActions'
-import { bindActionCreators } from 'redux';
-
-
+import { allActions } from "./State/Action-Creators/allActions";
+import { bindActionCreators } from "redux";
 
 const ItemButton = (props) => {
-    const state = useSelector((state) => state);
-    const [id] = useState(_uniqueId("i")); 
+  const state = useSelector((state) => state);
+  const [id] = useState(_uniqueId("i"));
 
-    const dispatch = useDispatch();
-    const removeEl = (e) => {
-        let parentDiv = e.target.parentNode.parentNode;
-        let ingredientToBeRemoved = parentDiv.querySelector(".itemNameTag").innerText;
+  const dispatch = useDispatch();
+  const removeEl = (e) => {
+    let parentDiv = e.target.parentNode.parentNode;
+    let ingredientToBeRemoved =
+      parentDiv.querySelector(".itemNameTag").innerText;
 
+    /**
+     * We do not have to remove the element over here, as when we update the state, the element gets
+     * deleted on its own
+     */
+    // document.getElementById(elId).remove();
 
-        /**
-         * We do not have to remove the element over here, as when we update the state, the element gets 
-         * deleted on its own
-         */
-        // document.getElementById(elId).remove();
+    const { removeIngredient } = bindActionCreators(allActions, dispatch);
+    removeIngredient({ ingredientToBeRemoved });
+  };
 
-        const {removeIngredient} = bindActionCreators(allActions, dispatch);
-        removeIngredient({ingredientToBeRemoved});
-    }
-
-    return (
-        <p className = {["itemNameTag"].join(" ")} onClick = {removeEl}>{props.itemName}</p>                  
-    )
-}
+  return (
+    <p className={["itemNameTag"].join(" ")} onClick={removeEl}>
+      {props.itemName}
+    </p>
+  );
+};
 
 const PInsertionItem = (props) => {
-    return (
-        <p className = {["itemName", "removeItemButton"]}>props.name</p>
-    )
-}
+  return <p className={["itemName", "removeItemButton"]}>props.name</p>;
+};
 
 const SearchItems = (props) => {
-    const state = useSelector((state) => state);
-    let ingredients = state.mainState.ingredients;
+  const state = useSelector((state) => state);
+  let ingredients = state.mainState.ingredients;
 
-    let buttonList = [];
+  let buttonList = [];
 
-    if (ingredients == undefined){
-        ingredients = new Set();
-    }
+  if (ingredients == undefined) {
+    ingredients = new Set();
+  }
 
-    ingredients.forEach(i => {
-        buttonList.push(<ItemButton itemName = {i}/>)
-    })
+  ingredients.forEach((i) => {
+    buttonList.push(<ItemButton itemName={i} />);
+  });
 
-    // console.log("ingredient is ");
-    // console.log(buttonList);
+  return (
+    <div className="searchItemContainer">
+      <div className={["searchItemList"].join(" ")}>{buttonList}</div>
+    </div>
+  );
+};
 
-
-    return (
-        <div className = "searchItemContainer">
-            <div className = {["searchItemList"].join(" ")}>
-                {buttonList}
-            </div>
-        </div>
-    )
-}
-
-export { SearchItems }
+export { SearchItems };

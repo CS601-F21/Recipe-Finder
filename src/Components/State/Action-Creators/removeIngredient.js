@@ -1,10 +1,15 @@
-const removeIngredient = (ingredient) => {
-    return (dispatch) => {
-        dispatch({
-            type: "removeIngredient",
-            payload : ingredient
-        })
-    }
-}
+/**
+ * Author : Shubham Pareek
+ * Purpose : Action to remove an ingredient
+ */
 
-export { removeIngredient }
+const removeIngredient = (ingredient) => {
+  return (dispatch) => {
+    dispatch({
+      type: "removeIngredient",
+      payload: ingredient,
+    });
+  };
+};
+
+export { removeIngredient };
